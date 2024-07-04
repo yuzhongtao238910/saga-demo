@@ -1,4 +1,4 @@
-import { call, put, delay, all, takeEvery, take, fork } from 'redux-saga/effects';  
+import { call, put, delay, all, takeEvery, take, fork, takeLatest } from 'redux-saga/effects';  
 import axios from "axios"
 const api1 = (params) => {
   return axios.get("http://localhost:9090/list", {
@@ -49,13 +49,16 @@ function* minusAsync() {
   yield put({ type: 'MINUS' }); // 分发 ADD action  
 }
 function* watchIncrementAsync() {  
-  yield takeEvery("INCREMENT_ASYNC", incrementAsync);  
+  // yield take("INCREMENT_ASYNC", incrementAsync);  
   // yield delay(1000); // 等待 1000 毫秒  
   // yield put({ type: 'ADD' }); // 分发 ADD action  
+   yield take("INCREMENT_ASYNC");  
+   yield call(incrementAsync);  
 }
 
 function* watchMinusAsync() {  
-  yield takeEvery("MINUS_ASYNC", minusAsync);  
+  // yield takeEvery("MINUS_ASYNC", minusAsync);  
+  yield takeLatest("MINUS_ASYNC", minusAsync)
   // yield delay(1000); // 等待 1000 毫秒  
   // yield put({ type: 'ADD' }); // 分发 ADD action  
 }
